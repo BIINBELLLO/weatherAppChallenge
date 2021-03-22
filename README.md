@@ -1,6 +1,8 @@
 # WeatherApp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.14.
+This project was designed as a solution to a challenge! It's simply a weather app for getting the weather forecast for your current location and other cities of the world
+
+Live version of the app can be found <a href ="https://devbinbello-weather-app.netlify.app/" target ="_blank">Here</a>
 
 ## Development server
 

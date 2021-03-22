@@ -1,0 +1,95 @@
+$extra-small: 576px;
+$medium: 768px;
+$large: 992px;
+$extra-large: 1200px;
+$primary-color-3: #00A09A;
+$xs: 575.98px;
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1200px;
+
+@mixin extra-small {
+    @media (max-width: #{$extra-small}) {
+        @content;
+    }
+}
+
+@mixin medium {
+    @media (max-width: #{$medium}) {
+        @content;
+    }
+}
+
+@mixin large {
+    @media (min-width: #{$large}) {
+        @content;
+    }
+}
+
+@mixin extra-large {
+    @media (min-width: #{$extra-large}) {
+        @content;
+    }
+}
+
+@mixin lg {
+    @media (min-width: #{$lg}) {
+        @content;
+    }
+}
+
+@mixin lg_only {
+    @media (min-width: #{$lg}) and (max-width: 1199.98px) {
+        @content;
+    }
+}
+
+@mixin xl {
+    @media (min-width: #{$xl}) {
+        @content;
+    }
+}
+
+@mixin lg-n-below {
+    @media (max-width: #{$lg}) {
+        @content;
+    }
+}
+
+@mixin md-n-below {
+    @media (max-width: #{$md}) {
+        @content;
+    }
+}
+
+@mixin sm-n-below {
+    @media (max-width: #{$sm}) {
+        @content;
+    }
+}
+
+
+
+@mixin custom-scroll-body {
+    &::-webkit-scrollbar {
+        height: 7px;
+        width: 7px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0); 
+        box-shadow: inset 0 0 6px rgba(0,0,0,0); 
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: darken($primary-color-3, 2);
+    }
+    &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 0px rgba(0,0,0,0); 
+        box-shadow: inset 0 0 6px rgba(0,0,0,0); 
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-corner{ 
+        display: none; height: 0px; width: 0px; 
+    }
+}

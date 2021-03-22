@@ -1,0 +1,50 @@
+@import "../../../styles/config";
+
+.side-d-wrapper {
+  display: block;
+  .form-wrapper {
+    padding: 15px 0;
+    .form-wrapper__header {
+      margin-bottom: 0px;
+    }
+  }
+}
+
+nav.side {
+  width: 33.5%;
+  position: absolute;
+  left: 0;
+  height: 100%;
+  z-index: 999;
+  background: #1e213a;
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  top: 0;
+  transform: translateX(-100%);
+  will-change: transform;
+  min-height: 100vh;
+
+  position: fixed;
+  top: 0;
+}
+
+nav.active {
+  transform: none;
+}
+
+@include md-n-below {
+  nav.side {
+    width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+  .side-d-wrapper {
+    .form-wrapper {
+      padding: 35px 15px;
+      .form-wrapper__header {
+        margin-bottom: 20px;
+      }
+    }
+  }
+}
