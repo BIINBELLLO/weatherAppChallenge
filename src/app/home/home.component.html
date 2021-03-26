@@ -9,7 +9,7 @@
             </button>
           </div>
           <div class="location-btn">
-            <button class="btn">
+            <button class="btn" (click)="getCurrentUsersLocation()">
               <img
                 src="../../assets/images/round_my_location_white_18dp.png"
                 alt=""
@@ -19,28 +19,64 @@
           </div>
         </div>
         <div class="d-flex justify-content-center current mt-3">
-          <img src="../../assets/images/Shower.png" alt="" />
+          <img
+            [src]="
+              getWeatherImage(
+                weatherDetails?.consolidated_weather[currentIndex]
+                  .weather_state_abbr
+              )
+            "
+            alt=""
+          />
         </div>
         <div class="text-center degree mt-3 mb-4">
           <p>
-            15<sub
+            {{
+              getRightTemperatureValue(
+                weatherDetails?.consolidated_weather[currentIndex].the_temp
+              ) | number: "1.0-0"
+            }}
+            <sub *ngIf="viewingCelcius"
               ><span><sup>o</sup>C</span></sub
+            >
+            <sub *ngIf="!viewingCelcius"
+              ><span><sup>o</sup>F</span></sub
             >
           </p>
         </div>
         <div class="row my-5"></div>
         <div class="text-center situation mt-5">
-          <p>Shower</p>
+          <p>
+            {{
+              weatherDetails?.consolidated_weather[currentIndex]
+                .weather_state_name
+            }}
+          </p>
         </div>
         <div class="text-center date mt-5">
           <p>
-            <span class="today mr-3">Today</span>
+            <span class="today mr-3" *ngIf="currentIndex === 0">Today</span>
+            <span class="today mr-3" *ngIf="currentIndex === 1">Tomorrow</span>
+            <span
+              class="today mr-3"
+              *ngIf="currentIndex !== 0 && currentIndex !== 1"
+              >{{
+                weatherDetails?.consolidated_weather[currentIndex]
+                  .applicable_date | date: "EEE"
+              }}</span
+            >
             <span class="dot mr-3">-</span>
-            <span class="act-date">Fri, 5 Jun</span>
+            <span class="act-date">{{
+              weatherDetails?.consolidated_weather[currentIndex].applicable_date
+                | date: "EE, d MMM"
+            }}</span>
           </p>
         </div>
         <div class="text-center location mt-3">
-          <p><i class="fas fa-map-marker-alt mr-2"></i>Helsinki</p>
+          <p>
+            <i class="fas fa-map-marker-alt mr-2"></i
+            >{{ weatherDetails?.title }}
+          </p>
         </div>
       </div>
     </div>
@@ -49,87 +85,118 @@
         <div class="row justify-content-center mx-0">
           <div class="col-12 col-md-10">
             <div class="row justify-content-end top-buttons px-3 px-md-0">
-              <button class="btn mr-2 selected"><sup>o</sup>C</button>
-              <button class="btn"><sup>o</sup>F</button>
+              <button
+                class="btn mr-2"
+                [ngClass]="{ selected: viewingCelcius }"
+                (click)="viewTempInCelcius()"
+              >
+                <sup>o</sup>C
+              </button>
+              <button
+                class="btn mr-3"
+                [ngClass]="{ selected: !viewingCelcius }"
+                (click)="viewTempInFahrenheit()"
+              >
+                <sup>o</sup>F
+              </button>
+              <button class="today-btn" (click)="changeCurrentIndex(0)">
+                Today's Weather
+              </button>
             </div>
             <div class="row justify-content-between top-details pt-5">
-              <div class="col-6 col-md-2 pt-5 px-md-0">
-                <div class="card text-center p-4">
-                  <p>Tomorrow</p>
-                  <div class="d-flex justify-content-center">
-                    <img src="../../assets/images/Sleet.png" alt="" />
-                  </div>
-                  <div class="d-flex justify-content-between mt-3">
-                    <p class="max">16<sup>o</sup>C</p>
-                    <p class="min">11<sup>o</sup>C</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-2 pt-5 px-md-0">
-                <div class="card text-center p-4">
-                  <p>Tomorrow</p>
-                  <div class="d-flex justify-content-center">
-                    <img src="../../assets/images/Sleet.png" alt="" />
-                  </div>
-                  <div class="d-flex justify-content-between mt-3">
-                    <p class="max">16<sup>o</sup>C</p>
-                    <p class="min">11<sup>o</sup>C</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-2 pt-5 px-md-0">
-                <div class="card text-center p-4">
-                  <p>Tomorrow</p>
-                  <div class="d-flex justify-content-center">
-                    <img src="../../assets/images/Sleet.png" alt="" />
-                  </div>
-                  <div class="d-flex justify-content-between mt-3">
-                    <p class="max">16<sup>o</sup>C</p>
-                    <p class="min">11<sup>o</sup>C</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-6 col-md-2 pt-5 px-md-0">
-                <div class="card text-center p-4">
-                  <p>Tomorrow</p>
-                  <div class="d-flex justify-content-center">
-                    <img src="../../assets/images/Sleet.png" alt="" />
-                  </div>
-                  <div class="d-flex justify-content-between mt-3">
-                    <p class="max">16<sup>o</sup>C</p>
-                    <p class="min">11<sup>o</sup>C</p>
+              <ng-container
+                *ngFor="
+                  let weather of weatherDetails?.consolidated_weather;
+                  index as i
+                "
+              >
+                <div
+                  class="col-6 col-md-2 pt-5 px-md-0 click"
+                  *ngIf="i !== 0"
+                  (click)="changeCurrentIndex(i)"
+                >
+                  <div class="card text-center py-4 px-3">
+                    <p *ngIf="i === 1">Tomorrow</p>
+                    <p *ngIf="i !== 1">
+                      {{ weather.applicable_date | date: "EE, d MMM" }}
+                    </p>
+                    <div class="d-flex justify-content-center">
+                      <img
+                        [src]="getWeatherImage(weather.weather_state_abbr)"
+                        alt=""
+                      />
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <p class="max">
+                        {{
+                          getRightTemperatureValue(weather.max_temp)
+                            | number: "1.0-0"
+                        }}
+                        <span *ngIf="viewingCelcius"><sup>o</sup>C</span>
+                        <span *ngIf="!viewingCelcius"><sup>o</sup>F</span>
+                      </p>
+                      <p class="min">
+                        {{
+                          getRightTemperatureValue(weather.min_temp)
+                            | number: "1.0-0"
+                        }}
+                        <span *ngIf="viewingCelcius"><sup>o</sup>C</span>
+                        <span *ngIf="!viewingCelcius"><sup>o</sup>F</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="col-6 col-md-2 pt-5 px-md-0">
-                <div class="card text-center p-4">
-                  <p>Tomorrow</p>
-                  <div class="d-flex justify-content-center">
-                    <img src="../../assets/images/Sleet.png" alt="" />
-                  </div>
-                  <div class="d-flex justify-content-between mt-3">
-                    <p class="max">16<sup>o</sup>C</p>
-                    <p class="min">11<sup>o</sup>C</p>
-                  </div>
-                </div>
-              </div>
+              </ng-container>
             </div>
-            <div class="row highlights my-5">
-              <h3>Today's Highlights</h3>
+            <div class="row highlights my-5 px-3 px-md-0">
+              <h3 *ngIf="currentIndex === 0">Today's Highlights</h3>
+              <h3 *ngIf="currentIndex === 1">Tomorrow's Highlights</h3>
+              <h3 *ngIf="currentIndex !== 1 && currentIndex !== 0">
+                {{
+                  weatherDetails?.consolidated_weather[currentIndex]
+                    .applicable_date | date: "EE, d MMM"
+                }}'s Highlights
+              </h3>
             </div>
             <div class="highlights-details">
               <div class="row">
-                <div class="col-12 col-md-6 mb-5">
+                <div class="col-12 col-md-6 mb-5 pl-md-0">
                   <div class="card py-4 text-center">
                     <p>Wind Status</p>
-                    <h6>7<span>mph</span></h6>
-                    <p><button class="btn"></button> WSW</p>
+                    <h6>
+                      {{
+                        weatherDetails?.consolidated_weather[currentIndex]
+                          .wind_speed | number: "1.0-0"
+                      }}<span>mph</span>
+                    </h6>
+                    <p>
+                      <button class="btn" *ngIf="loadedAndNoError">
+                        <i
+                          class="fas fa-location-arrow"
+                          [ngStyle]="
+                            getRotationStyle(
+                              weatherDetails?.consolidated_weather[currentIndex]
+                                .wind_direction
+                            )
+                          "
+                        ></i>
+                      </button>
+                      {{
+                        weatherDetails?.consolidated_weather[currentIndex]
+                          .wind_direction_compass
+                      }}
+                    </p>
                   </div>
                 </div>
-                <div class="col-12 col-md-6 mb-5">
+                <div class="col-12 col-md-6 mb-5 pr-md-0">
                   <div class="card py-4 px-5 text-center">
                     <p>Humidity</p>
-                    <h6>84<span>%</span></h6>
+                    <h6>
+                      {{
+                        weatherDetails?.consolidated_weather[currentIndex]
+                          .humidity
+                      }}<span>%</span>
+                    </h6>
                     <div class="progress-holder">
                       <div class="header d-flex justify-content-between mb-1">
                         <p>0</p>
@@ -140,29 +207,52 @@
                         <div
                           class="progress-bar bg-warning"
                           role="progressbar"
-                          style="width: 85%"
-                          aria-valuenow="85"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
+                          [ngStyle]="{
+                            width: getStyleValue(
+                              weatherDetails?.consolidated_weather[currentIndex]
+                                .humidity
+                            )
+                          }"
+                          [attr.aria-valuenow]="
+                            weatherDetails?.consolidated_weather[currentIndex]
+                              .humidity
+                          "
+                          [attr.aria-valuemin]="0"
+                          [attr.aria-valuemax]="100"
                         ></div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-md-6 mb-5">
+                <div class="col-12 col-md-6 mb-5 pl-md-0">
                   <div class="card py-4 text-center">
                     <p>Visibility</p>
-                    <h6>6,4<span>miles</span></h6>
+                    <h6>
+                      {{
+                        weatherDetails?.consolidated_weather[currentIndex]
+                          .visibility | number: "1.0-1"
+                      }}<span>miles</span>
+                    </h6>
                   </div>
                 </div>
-                <div class="col-12 col-md-6 mb-5">
+                <div class="col-12 col-md-6 mb-5 pr-md-0">
                   <div class="card py-4 text-center">
                     <p>Air Pressure</p>
-                    <h6>998<span>mb</span></h6>
+                    <h6>
+                      {{
+                        weatherDetails?.consolidated_weather[currentIndex]
+                          .air_pressure | number: "1.0-0"
+                      }}<span>mb</span>
+                    </h6>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="row justify-content-center footer mt-5 no-gutters mb-5">
+          <div class="col-12 col-md-8 text-center">
+            <p>Created by DevBinbello - devChallenges.io</p>
           </div>
         </div>
       </div>
@@ -194,5 +284,35 @@
       </div>
     </div>
   </div>
-  <div class="drawer-body"></div>
+  <div class="drawer-body">
+    <div class="mt-5 d-flex justify-content-between search-form">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1"
+            ><i class="fa fa-search"></i
+          ></span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search Location"
+          [(ngModel)]="searchTerm"
+        />
+      </div>
+      <button class="btn btn-primary px-3 ml-2" (click)="searchLocations()">
+        Search
+      </button>
+    </div>
+
+    <div class="search-result mt-5">
+      <div
+        class="d-flex justify-content-between p-3 result mb-3"
+        *ngFor="let result of searchResult"
+        (click)="getLocationWeatherDetails(result.woeid); closeDrawer.click()"
+      >
+        <p>{{ result.title }}</p>
+        <p><i class="fa fa-angle-right text-white"></i></p>
+      </div>
+    </div>
+  </div>
 </app-side-drawer>
