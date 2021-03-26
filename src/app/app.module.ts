@@ -11,6 +11,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { SideDrawerComponent } from "./components/side-drawer/side-drawer.component";
 import { JQ_TOKEN } from "./_services/jQuery.service";
 import { SideDrawerTriggerDirective } from "./components/side-drawer-trigger.directive";
+import { FormsModule } from "@angular/forms";
 const jQuery = window["$"];
 
 @NgModule({
@@ -25,6 +26,7 @@ const jQuery = window["$"];
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    FormsModule,
     ToastrModule.forRoot(),
     NgxSpinnerModule,
   ],
